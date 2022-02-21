@@ -1,35 +1,33 @@
 <template>
   <header>
-    <v-app-bar app color="primary" dark>
+    <v-app-bar app color="white" elevation="1">
       <div class="d-flex align-center">
         <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
           class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
+          :src="require('../assets/promobit-15686966.png')"
+          width="180"
         />
       </div>
 
       <v-spacer></v-spacer>
 
+      <div>
+        <router-link class="views_link" :to="{ name: 'product@home' }">
+          Produtos
+        </router-link>
+        <span class="divider"></span>
+        <router-link class="views_link" :to="{ name: 'tag@home' }">
+          Tag
+        </router-link>
+      </div>
+
+      <v-spacer></v-spacer>
       <v-btn
         href="https://github.com/vuetifyjs/vuetify/releases/latest"
         target="_blank"
         text
       >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
+        <span class="mr-2">Logout</span>
       </v-btn>
     </v-app-bar>
   </header>
@@ -41,4 +39,24 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+.views_link {
+  background-color: #f2f2f2;
+  padding: 8px 21px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 500;
+  color: #0072ed;
+}
+
+.views_link.router-link-exact-active {
+  background-color: #238cff;
+  color: #ffffff;
+}
+
+.divider {
+  border-right: 2px solid #f2f2f2;
+  margin: 0 6px;
+  padding: 2px 0;
+}
+</style>
