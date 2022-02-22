@@ -36,6 +36,7 @@ const updateTag = (context, payload) => {
   const formData = new FormData();
   formData.append("id", payload.id);
   formData.append("name", payload.name);
+  formData.append("description", payload.description);
   formData.append("color", payload.color);
 
   return new Promise((resolve, reject) => {
@@ -81,6 +82,7 @@ const deleteTag = (context, tag_id) => {
 const createTag = (context, payload) => {
   const formData = new FormData();
   formData.append("name", payload.name);
+  formData.append("description", payload.description);
   formData.append("color", payload.color);
 
   return new Promise((resolve, reject) => {

@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import table from "@/components/ProductTable.vue";
+import table from "@/views/product/components/ProductTable.vue";
 export default {
   name: "productHome",
   components: { "product-table": table },

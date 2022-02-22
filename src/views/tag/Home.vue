@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import table from "@/components/TagTable.vue";
+import table from "@/views/tag/components/TagTable.vue";
 export default {
   name: "tagHome",
   components: { "tag-table": table },

@@ -23,6 +23,9 @@
 
           <div>
             <v-btn @click="login" block>Logar</v-btn>
+            <v-alert text dense type="info" class="mt-2">
+              Email: user@email.com / Senha: password
+            </v-alert>
           </div>
         </div>
       </v-col>

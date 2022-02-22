@@ -36,6 +36,7 @@ const updateProduct = (context, payload) => {
   const formData = new FormData();
   formData.append("id", payload.id);
   formData.append("name", payload.name);
+  formData.append("description", payload.description);
   payload.tags.forEach((item) => formData.append("tags[]", item));
 
   return new Promise((resolve, reject) => {
@@ -81,6 +82,7 @@ const deleteProduct = (context, product_id) => {
 const createProduct = (context, payload) => {
   const formData = new FormData();
   formData.append("name", payload.name);
+  formData.append("description", payload.description);
   payload.tags.forEach((item) => formData.append("tags[]", item));
 
   return new Promise((resolve, reject) => {
