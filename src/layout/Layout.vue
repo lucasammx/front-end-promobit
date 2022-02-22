@@ -11,9 +11,19 @@
 
 <script>
 import Header from "../components/Header.vue";
+import { mapActions } from "vuex";
 
 export default {
   components: { Header },
+  methods: {
+    ...mapActions({
+      getAllProducts: "products/getAllProducts",
+      getAllTags: "tags/getAllTags",
+    }),
+  },
+  created() {
+    Promise.all([this.getAllTags(), this.getAllProducts()]);
+  },
 };
 </script>
 

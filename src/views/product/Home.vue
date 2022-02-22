@@ -1,14 +1,14 @@
 <template>
   <v-container tag="section">
-    <data-table></data-table>
+    <product-table></product-table>
   </v-container>
 </template>
 
 <script>
-import table from "@/components/table.vue";
+import table from "@/components/ProductTable.vue";
 export default {
   name: "productHome",
-  components: { "data-table": table },
+  components: { "product-table": table },
 };
 </script>
 

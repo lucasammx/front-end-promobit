@@ -4,12 +4,26 @@
  */
 import Vue from "vue";
 
-const getAllProducts = ({ commit }) => {
+const getAllTags = ({ commit }) => {
   return new Promise((resolve, reject) => {
     window.axios
-      .get(`/products`)
+      .get(`/tags`)
       .then((resp) => {
-        commit("SET_PRODUCTS", resp.data.data);
+        commit("SET_TAGS", resp.data.data);
+        resolve(resp.data);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
+
+const getSpecifiedTag = ({ commit }, tag_id) => {
+  return new Promise((resolve, reject) => {
+    window.axios
+      .get(`/tags/${tag_id}`)
+      .then((resp) => {
+        commit("SET_SPECIFIED_TAG", resp.data.data);
         resolve(resp.data);
       })
       .catch((error) => {
@@ -18,32 +32,18 @@ const getAllProducts = ({ commit }) => {
   });
 };
 
-const getSpecifiedProduct = ({ commit }, product_id) => {
-  return new Promise((resolve, reject) => {
-    window.axios
-      .get(`/products/${product_id}`)
-      .then((resp) => {
-        commit("SET_SPECIFIED_PRODUCT", resp.data.data);
-        resolve(resp.data);
-      })
-      .catch((error) => {
-        reject(error.data.errors);
-      });
-  });
-};
-
-const updateProduct = (context, payload) => {
+const updateTag = (context, payload) => {
   const formData = new FormData();
   formData.append("id", payload.id);
   formData.append("name", payload.name);
-  payload.tags.forEach((item) => formData.append("tags[]", item));
+  formData.append("color", payload.color);
 
   return new Promise((resolve, reject) => {
     window.axios
-      .post(`/products/${payload.id}?_method=PUT`, formData)
+      .post(`/tags/${payload.id}?_method=PUT`, formData)
       .then((resp) => {
-        Vue.$toast.success("Produto atualizado com sucesso!");
         resolve(resp.data);
+        Vue.$toast.success("Tag atualizada com sucesso!");
       })
       .catch((error) => {
         let objectError = error.response.data.errors;
@@ -57,12 +57,12 @@ const updateProduct = (context, payload) => {
   });
 };
 
-const deleteProduct = (context, product_id) => {
+const deleteTag = (context, tag_id) => {
   return new Promise((resolve, reject) => {
     window.axios
-      .delete(`/products/${product_id}`)
+      .delete(`/tags/${tag_id}`)
       .then((resp) => {
-        Vue.$toast.success("Produto excluído com sucesso!");
+        Vue.$toast.success("Tag excluída com sucesso!");
         resolve(resp.data.data);
       })
       .catch((error) => {
@@ -78,20 +78,20 @@ const deleteProduct = (context, product_id) => {
   });
 };
 
-const createProduct = (context, payload) => {
+const createTag = (context, payload) => {
   const formData = new FormData();
   formData.append("name", payload.name);
-  payload.tags.forEach((item) => formData.append("tags[]", item));
+  formData.append("color", payload.color);
 
   return new Promise((resolve, reject) => {
     window.axios
-      .post(`/products`, formData, {
+      .post(`/tags`, formData, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
       })
       .then((resp) => {
-        Vue.$toast.success("Produto criado com sucesso!");
+        Vue.$toast.success("Tag criada com sucesso!");
         resolve(resp.data);
       })
       .catch((error) => {
@@ -102,14 +102,9 @@ const createProduct = (context, payload) => {
           });
         }
         reject(error.response);
-      });
+      })
+      .finally(() => {});
   });
 };
 
-export {
-  getAllProducts,
-  getSpecifiedProduct,
-  updateProduct,
-  deleteProduct,
-  createProduct,
-};
+export { getAllTags, getSpecifiedTag, updateTag, deleteTag, createTag };

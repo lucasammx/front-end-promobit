@@ -11,10 +11,10 @@
           <v-toolbar-title>Produtos</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="500px">
+          <v-dialog v-model="showDialogForm" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-                New Item
+                Novo produto
               </v-btn>
             </template>
             <v-card>
@@ -25,43 +25,38 @@
               <v-card-text>
                 <v-container>
                   <v-row>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.name"
-                        label="Dessert name"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.calories"
-                        label="Calories"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.fat"
-                        label="Fat (g)"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.carbs"
-                        label="Carbs (g)"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.protein"
-                        label="Protein (g)"
-                      ></v-text-field>
-                    </v-col>
+                    <v-text-field
+                      v-model="editedItem.name"
+                      label="Nome"
+                    ></v-text-field>
+                  </v-row>
+                  <v-row>
+                    <div>
+                      <span class="subheading">Selecione as tags:</span>
+                      <v-chip-group
+                        v-model="editedItem.tags"
+                        column
+                        multiple
+                        active-class="primary--text text--accent-4"
+                      >
+                        <v-chip
+                          v-for="tag in tags"
+                          :key="'tags-form-' + tag.id"
+                          :value="tag.id"
+                          filter
+                          outlined
+                        >
+                          {{ tag.name }}
+                        </v-chip>
+                      </v-chip-group>
+                    </div>
                   </v-row>
                 </v-container>
               </v-card-text>
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="close">
+                <v-btn color="blue darken-1" text @click="closeDialogForm">
                   Cancel
                 </v-btn>
                 <v-btn color="blue darken-1" text @click="save"> Save </v-btn>
@@ -75,7 +70,7 @@
               >
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="closeDelete"
+                <v-btn color="blue darken-1" text @click="closeDeleteDialog"
                   >Cancel</v-btn
                 >
                 <v-btn color="blue darken-1" text @click="deleteItemConfirm"
@@ -89,8 +84,16 @@
       </template>
       <template v-slot:[`item.tags`]="{ item }">
         <div>
-          <v-chip v-for="tag in item.tags" :key="'tags-' + tag.id" class="ma-2">
-            {{ tag.name }}
+          <v-chip
+            v-for="tag in item.tags"
+            :key="'tags-' + tag.id"
+            class="ma-2"
+            :color="tag.color"
+            style="border: 1px solid #afafaf"
+          >
+            <span :style="{ color: getContrastColor(tag.color) }">{{
+              tag.name
+            }}</span>
           </v-chip>
         </div>
       </template>
@@ -110,7 +113,7 @@
 import { mapState, mapActions } from "vuex";
 export default {
   data: () => ({
-    dialog: false,
+    showDialogForm: false,
     dialogDelete: false,
     headers: [
       {
@@ -118,79 +121,91 @@ export default {
         align: "start",
         value: "id",
       },
-      { text: "Produto", value: "name" },
+      { text: "Nome", value: "name" },
       { text: "Tags", value: "tags" },
       { text: "Actions", value: "actions", sortable: false },
     ],
     editedIndex: -1,
     editedItem: {
+      id: 0,
       name: "",
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
+      tags: [],
     },
     defaultItem: {
+      id: 0,
       name: "",
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
+      tags: [],
     },
   }),
 
   computed: {
     ...mapState("products", ["products"]),
+    ...mapState("tags", ["tags"]),
     formTitle() {
-      return this.editedIndex === -1 ? "New Item" : "Edit Item";
+      return this.editedIndex === -1 ? "Novo Produto" : "Atualizar Produto";
+    },
+    updatingProduct() {
+      return this.editedIndex > -1;
+    },
+    currentProductIndex() {
+      return this.products.findIndex((element) => {
+        return element.id == this.editedIndex;
+      });
     },
   },
 
   watch: {
-    dialog(val) {
-      val || this.close();
+    showDialogForm(val) {
+      val || this.closeDialogForm();
     },
     dialogDelete(val) {
-      val || this.closeDelete();
+      val || this.closeDeleteDialog();
     },
-  },
-
-  created() {
-    this.getAllProducts().then((response) => {
-      console.log(response);
-    });
   },
 
   methods: {
     ...mapActions({
       getAllProducts: "products/getAllProducts",
+      updateProduct: "products/updateProduct",
+      createProduct: "products/createProduct",
+      deleteProduct: "products/deleteProduct",
     }),
     editItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      this.dialog = true;
+
+      this.editedIndex = item.id;
+
+      let tagsIds = [];
+      this.editedItem.tags.forEach((tag) => tagsIds.push(tag.id));
+      this.editedItem.tags = tagsIds;
+
+      this.showDialogForm = true;
     },
 
     deleteItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
       this.editedItem = Object.assign({}, item);
+      this.editedIndex = item.id;
       this.dialogDelete = true;
     },
 
     deleteItemConfirm() {
-      this.desserts.splice(this.editedIndex, 1);
-      this.closeDelete();
+      this.deleteProduct(this.editedIndex).then((response) => {
+        if (response.deleted) {
+          this.products.splice(this.currentProductIndex, 1);
+        }
+      });
+      this.closeDeleteDialog();
     },
 
-    close() {
-      this.dialog = false;
+    closeDialogForm() {
+      this.showDialogForm = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
     },
 
-    closeDelete() {
+    closeDeleteDialog() {
       this.dialogDelete = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
@@ -199,12 +214,24 @@ export default {
     },
 
     save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem);
+      if (!this.updatingProduct) {
+        this.createProduct(this.editedItem).then((response) => {
+          this.products.push(response.data);
+        });
       } else {
-        this.desserts.push(this.editedItem);
+        this.updateProduct(this.editedItem).then(() => {
+          this.getAllProducts();
+        });
       }
-      this.close();
+      this.closeDialogForm();
+    },
+    getContrastColor(hexcolor) {
+      hexcolor = hexcolor.replace("#", "");
+      var r = parseInt(hexcolor.substr(0, 2), 16);
+      var g = parseInt(hexcolor.substr(2, 2), 16);
+      var b = parseInt(hexcolor.substr(4, 2), 16);
+      var yiq = (r * 299 + g * 587 + b * 114) / 1000;
+      return yiq >= 128 ? "black" : "white";
     },
   },
 };

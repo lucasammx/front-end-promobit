@@ -1,12 +1,14 @@
 <template>
   <v-container tag="section">
-    <p>tag home</p>
+    <tag-table></tag-table>
   </v-container>
 </template>
 
 <script>
+import table from "@/components/TagTable.vue";
 export default {
   name: "tagHome",
+  components: { "tag-table": table },
 };
 </script>
 
