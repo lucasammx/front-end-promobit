@@ -19,9 +19,19 @@ export default {
     ...mapActions({
       getAllProducts: "products/getAllProducts",
       getAllTags: "tags/getAllTags",
+      loginLogout: "auth/logout",
+      checkAuth: "auth/checkAuth",
     }),
+
+    isAuthenticated() {
+      this.checkAuth().catch(() => this.redirectLogin());
+    },
+    redirectLogin() {
+      this.loginLogout().then(() => this.$router.push({ name: "auth@login" }));
+    },
   },
   created() {
+    this.isAuthenticated();
     Promise.all([this.getAllTags(), this.getAllProducts()]);
   },
 };

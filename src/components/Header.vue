@@ -22,11 +22,7 @@
       </div>
 
       <v-spacer></v-spacer>
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
+      <v-btn @click="logout()" text>
         <span class="mr-2">Logout</span>
       </v-btn>
     </v-app-bar>
@@ -34,8 +30,19 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
   name: "header",
+  methods: {
+    ...mapActions({
+      loginLogout: "auth/logout",
+    }),
+    logout() {
+      this.loginLogout().then(() => {
+        this.$router.push({ name: "auth@login" });
+      });
+    },
+  },
 };
 </script>
 

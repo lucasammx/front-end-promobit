@@ -6,6 +6,14 @@ import vuetify from "./plugins/vuetify";
 
 window.axios = require("./plugins/axios");
 
+import {
+  responseInterceptor,
+  requestInterceptor,
+} from "./helpers/interceptors";
+
+responseInterceptor();
+requestInterceptor();
+
 import VueToast from "vue-toast-notification";
 // Import one of the available themes
 //import 'vue-toast-notification/dist/theme-default.css';
