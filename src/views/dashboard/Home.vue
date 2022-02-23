@@ -52,7 +52,6 @@ export default {
   },
   created() {
     this.getDashboardData().then((response) => {
-      console.log(response, response.labels);
       this.chatData.labels = response.labels;
       this.chatData.values = response.values;
     });

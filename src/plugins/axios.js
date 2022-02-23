@@ -1,6 +1,5 @@
 const axios = require("axios");
-require("dotenv").config();
-console.log(process.env);
+
 const instance = axios.create({
   baseURL: "http://localhost:8000/api",
   timeout: 10000,
