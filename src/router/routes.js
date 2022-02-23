@@ -10,6 +10,11 @@ const routes = [
     meta: { requiresAuth: true },
     children: [
       {
+        path: "dashboard",
+        name: "dashboard@home",
+        component: () => import("../views/dashboard/Home.vue"),
+      },
+      {
         path: "products",
         name: "product@home",
         component: () => import("../views/product/Home.vue"),

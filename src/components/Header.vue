@@ -12,6 +12,10 @@
       <v-spacer></v-spacer>
 
       <div>
+        <router-link class="views_link" :to="{ name: 'dashboard@home' }">
+          Dashboard
+        </router-link>
+        <span class="divider"></span>
         <router-link class="views_link" :to="{ name: 'product@home' }">
           Produtos
         </router-link>
@@ -32,7 +36,7 @@
 <script>
 import { mapActions } from "vuex";
 export default {
-  name: "header",
+  name: "header-app",
   methods: {
     ...mapActions({
       loginLogout: "auth/logout",

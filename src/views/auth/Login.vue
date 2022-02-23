@@ -79,7 +79,7 @@ export default {
       };
 
       this.authenticate(payload).then(() =>
-        this.$router.push({ name: "product@home" })
+        this.$router.push({ name: "dashboard@home" })
       );
     },
   },
