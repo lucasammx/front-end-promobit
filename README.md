@@ -1,4 +1,4 @@
-# frontenddesafio
+# Front-end-promobit
 
 ## Project setup
 ```
