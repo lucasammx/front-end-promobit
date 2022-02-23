@@ -24,7 +24,10 @@
         line-width="2"
         padding="16"
       ></v-sparkline>
-      <p v-else>Nenhuma Produto cadastrado com Tag!</p>
+      <p v-else>
+        Nenhuma Produto cadastrado com Tag, necessário ter ao menos 2 tags com
+        produtos!
+      </p>
     </div>
   </v-container>
 </template>
@@ -47,7 +50,7 @@ export default {
     ...mapState("products", ["products"]),
     ...mapState("tags", ["tags"]),
     isChatDataAvailable() {
-      return this.chatData.labels.length > 0 && this.chatData.values.length > 0;
+      return this.chatData.labels.length > 1 && this.chatData.values.length > 1;
     },
   },
   created() {
